@@ -3,7 +3,7 @@ import random
 from datetime import datetime, date
 
 # ==========================================
-# 1. 系統設定 (改為 Centered 適合手機閱讀)
+# 1. 系統設定 (Centered 適合手機閱讀)
 # ==========================================
 st.set_page_config(
     page_title="2026 全國賞櫻地圖 (蘇佐璽嚴選)",
@@ -224,7 +224,7 @@ st.markdown("""
     <div class="header-box">
         <div class="header-title">🌸 2026 全國賞櫻地圖</div>
         <div style="color:white; opacity:0.9; margin-top:5px; font-size:14px;">
-            復興區長 <b>蘇佐璽</b> 嚴選．手機版 ❤️
+            復興區長 <b>蘇佐璽</b> 祝大家新春愉快．賞花開心 ❤️
         </div>
     </div>
 """, unsafe_allow_html=True)
@@ -296,7 +296,8 @@ with tab1:
 
 # Tab 2: 景點總表 (手機版列表)
 with tab2:
-    filter_reg_list = st.selectbox("🌏 篩選地區", ["全部", "北部", "中部", "南部", "東部"])
+    st.markdown('<div style="margin-bottom:10px; font-size:14px; color:#666;">💡 點擊下方選單篩選地區：</div>', unsafe_allow_html=True)
+    filter_reg_list = st.selectbox("🌏 篩選地區", ["全部", "北部", "中部", "南部", "東部"], label_visibility="collapsed")
     
     filtered_list = [s for s in all_spots_db if filter_reg_list == "全部" or s['region'] == filter_reg_list]
     
@@ -304,7 +305,7 @@ with tab2:
         badge = '<span class="tag tag-tao">蘇區長推</span>' if "拉拉山" in spot['name'] or "角板山" in spot['name'] else ""
         
         st.markdown(f"""
-        <div style="background:white; padding:15px; border-bottom:1px solid #eee;">
+        <div style="background:white; padding:15px; border-bottom:1px solid #eee; margin-top:5px;">
             <div style="font-weight:bold; font-size:16px; color:#333;">{spot['name']} {badge}</div>
             <div style="font-size:13px; color:#999; margin:3px 0;">📍 {spot['region']} {spot['zone']} | 🌸 {spot['flower']}</div>
             <div style="font-size:14px; color:#555;">{spot['desc']}</div>
