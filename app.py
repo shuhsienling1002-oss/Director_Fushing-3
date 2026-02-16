@@ -7,7 +7,7 @@ from datetime import datetime, date
 # 1. 系統設定 (System Config)
 # ==========================================
 st.set_page_config(
-    page_title="2026 全國賞櫻地圖 (蘇佐璽嚴選終極版)",
+    page_title="2026 全國賞櫻地圖 (蘇佐璽推薦)",
     page_icon="🌸",
     layout="centered",
     initial_sidebar_state="collapsed"
@@ -55,7 +55,8 @@ footer {display: none !important;}
     margin-bottom: 20px;
 }
 
-/* === 🚀 關鍵修改：出發日高亮特效 === */
+/* === 🚀 關鍵修改：出發日高亮特效 & 手機版文字修復 === */
+
 /* 1. 讓標題跳動並變色 */
 div[data-testid="stDateInput"] > label {
     color: #C71585 !important; /* 深粉紅 */
@@ -70,6 +71,16 @@ div[data-testid="stDateInput"] div[data-baseweb="input"] {
     border: 2px solid #FF1493 !important;
     background-color: #FFF5F7 !important;
     border-radius: 10px !important;
+}
+
+/* 3. [修復] 強制輸入框內的文字顏色為深色 (解決手機版看不到日期的問題) */
+/* 針對 iOS Safari 和 Android Chrome 的強制顯色 */
+div[data-testid="stDateInput"] input {
+    color: #333333 !important;
+    -webkit-text-fill-color: #333333 !important; /* iOS 專用 */
+    font-weight: bold !important;
+    caret-color: #333333 !important; /* 游標顏色 */
+    opacity: 1 !important;
 }
 
 /* 動畫定義 */
@@ -135,7 +146,7 @@ div[data-testid="stDateInput"] div[data-baseweb="input"] {
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. 核心資料庫 (45+ 筆完整版)
+# 3. 核心資料庫 (45+ 筆完整版 - 確認無刪減)
 # ==========================================
 all_spots_db = [
     # === 👑 桃園復興區 (核心推廣) ===
