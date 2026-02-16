@@ -6,14 +6,14 @@ from datetime import datetime, date
 # 1. 系統設定
 # ==========================================
 st.set_page_config(
-    page_title="2026 全國賞櫻環島地圖 (蘇佐璽嚴選版)",
+    page_title="2026 全國賞櫻百科 (蘇佐璽嚴選)",
     page_icon="🌸",
-    layout="centered",
+    layout="wide", # 改為寬版以容納更多資訊
     initial_sidebar_state="collapsed"
 )
 
 # ==========================================
-# 2. CSS 美學 (維持蘇區長粉色系風格)
+# 2. CSS 美學 (粉色系 + 深色模式修復 + 標籤優化)
 # ==========================================
 st.markdown("""
     <style>
@@ -36,9 +36,6 @@ st.markdown("""
         color: #333333 !important;
     }
     input { color: #333333 !important; }
-    div[data-baseweb="select"] span { color: #333333 !important; }
-    ul[data-baseweb="menu"] { background-color: #ffffff !important; }
-    li[data-baseweb="option"] { color: #333333 !important; }
     
     /* 隱藏官方元件 */
     header {visibility: hidden;}
@@ -46,377 +43,207 @@ st.markdown("""
     
     /* 標題區 */
     .header-box {
-        background: linear-gradient(135deg, #FF69B4 0%, #C71585 100%);
-        padding: 30px 20px;
+        background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
+        padding: 40px 20px;
         border-radius: 0 0 30px 30px;
         color: white !important;
         text-align: center;
         margin-bottom: 25px;
-        box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+        box-shadow: 0 4px 15px rgba(255, 20, 147, 0.4);
         margin-top: -60px;
     }
-    .header-title { font-size: 28px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); color: white !important; }
-    .header-subtitle { font-size: 16px; margin-top: 5px; opacity: 0.9; color: white !important; }
+    .header-title { font-size: 36px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); color: white !important; }
     
-    /* 輸入卡片 */
-    .input-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        border: 1px solid #FFE4E1;
-        margin-bottom: 20px;
-    }
-    
-    /* 按鈕 */
-    .stButton>button {
-        width: 100%;
-        background-color: #FF1493;
-        color: white !important;
-        border-radius: 50px;
-        border: none;
-        padding: 12px 0;
-        font-weight: bold;
-        transition: 0.3s;
-        font-size: 18px;
-    }
-    .stButton>button:hover {
-        background-color: #C71585;
-    }
-    
-    /* 資訊看板 */
-    .info-box {
-        background-color: #fffbea;
-        border-left: 5px solid #FFD700;
+    /* 景點卡片優化 */
+    .spot-card {
+        background: white;
+        border-radius: 15px;
         padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        border-left: 6px solid #FF69B4;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: transform 0.2s;
     }
-    .weather-tag {
-        font-weight: bold;
-        color: #D48806 !important;
-        font-size: 18px;
-        margin-bottom: 5px;
-    }
+    .spot-card:hover { transform: translateY(-3px); }
     
-    /* 時間軸 */
-    .timeline-item {
-        border-left: 3px solid #FF69B4;
-        padding-left: 20px;
-        margin-bottom: 25px;
-        position: relative;
-    }
-    .timeline-item::before {
-        content: '🌸';
-        position: absolute;
-        left: -13px;
-        top: 0;
-        background: #FFF0F5;
-        border-radius: 50%;
-        font-size: 18px;
-    }
-    .day-header {
-        background: #FFE4E1;
-        color: #C71585 !important;
-        padding: 8px 20px;
-        border-radius: 20px;
+    /* 標籤徽章 */
+    .badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white !important;
+        margin-right: 5px;
         display: inline-block;
+    }
+    .b-region { background: #6A5ACD; }
+    .b-flower { background: #FF69B4; }
+    .b-tag { background: #20B2AA; }
+    .b-secret { background: #FF4500; box-shadow: 0 0 5px #FF4500; }
+    
+    /* 搜尋欄特效 */
+    .search-box {
+        border: 2px solid #FF1493;
+        border-radius: 50px;
+        padding: 10px;
+        text-align: center;
+        background: white;
         margin-bottom: 20px;
-        margin-top: 10px;
-        font-weight: bold;
-        font-size: 16px;
-    }
-    .spot-title { font-weight: bold; color: #C71585 !important; font-size: 18px; }
-    .spot-desc { font-size: 14px; color: #555 !important; margin-top: 3px; }
-    .spot-tag { 
-        font-size: 12px; background: #FFE4E1; color: #D87093 !important; 
-        padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle;
-    }
-    
-    /* 桃園特別標記 */
-    .taoyuan-badge {
-        background: #9370DB; color: white !important; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 5px;
-    }
-    
-    /* 新增：秘境標記 */
-    .secret-badge {
-        background: #FF4500; color: white !important; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 5px;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. 核心資料庫 (擴充秘境版)
+# 3. 核心資料庫 (終極擴充版 - 50+ 景點)
 # ==========================================
+# 增加欄位: "tags" (適合搜尋)
 all_spots_db = [
-    # --- 桃園 (Taoyuan - Must Have) ---
-    {"name": "拉拉山恩愛農場", "region": "北部", "zone": "深山絕景", "month": [2, 3], "type": "賞花", "flower": "千島櫻/富士櫻", "fee": "門票$100", "desc": "【蘇區長力推】桃園復興最高點，櫻花與雲海共舞。"},
-    {"name": "復興區角板山行館", "region": "北部", "zone": "市區近郊", "month": [1, 2], "type": "健行", "flower": "梅花/山櫻", "fee": "免門票", "desc": "【蘇區長力推】北橫最美歷史行館，賞花兼遊湖。"},
-    {"name": "東眼山森林遊樂區", "region": "北部", "zone": "市區近郊", "month": [2, 3], "type": "健行", "flower": "山櫻花", "fee": "門票$80", "desc": "【蘇區長力推】漫步柳杉林，尋找粉紅驚喜。"},
-    {"name": "中巴陵櫻木花道", "region": "北部", "zone": "深山絕景", "month": [2], "type": "秘境", "flower": "昭和櫻", "fee": "免門票", "desc": "北橫公路上的粉紅隧道，攝影師最愛。"},
+    # === 👑 桃園復興區 (蘇區長本命區) ===
+    {"name": "拉拉山恩愛農場", "region": "北部", "loc": "桃園復興", "month": [2, 3], "flower": "千島櫻/富士櫻", "fee": "$100", "tags": ["大景", "雲海", "攝影"], "desc": "粉紅櫻花與雲海同框的夢幻大景。"},
+    {"name": "中巴陵櫻木花道", "region": "北部", "loc": "桃園復興", "month": [2], "flower": "昭和櫻", "fee": "免費", "tags": ["秘境", "隧道", "免費"], "desc": "北橫公路旁最美的粉紅隧道。"},
+    {"name": "角板山行館", "region": "北部", "loc": "桃園復興", "month": [1, 2], "flower": "梅花/山櫻", "fee": "免費", "tags": ["親子", "歷史", "平地"], "desc": "賞花還能逛戰備隧道，適合全家出遊。"},
+    {"name": "東眼山森林遊樂區", "region": "北部", "loc": "桃園復興", "month": [2, 3], "flower": "山櫻花", "fee": "$80", "tags": ["健行", "森林", "避暑"], "desc": "漫步在柳杉林中的粉紅驚喜。"},
+    {"name": "壽山巖觀音寺", "region": "北部", "loc": "桃園龜山", "month": [2], "flower": "寒櫻", "fee": "免費", "tags": ["廟宇", "平地", "易達"], "desc": "桃園市區最近的賞櫻名所，香火鼎盛。"},
 
-    # --- 北部 (Other North) ---
-    {"name": "三峽大熊櫻花林", "region": "北部", "zone": "市區近郊", "month": [1, 2, 3], "type": "網美", "flower": "三色櫻/八重櫻", "fee": "門票$250", "desc": "【新北必去】4000棵櫻花林，夜櫻拍攝聖地。"},
-    {"name": "淡水天元宮", "region": "北部", "zone": "市區近郊", "month": [2, 3], "type": "網美", "flower": "吉野櫻", "fee": "免門票", "desc": "天壇與夜櫻的絕美構圖。"},
-    {"name": "司馬庫斯", "region": "北部", "zone": "深山絕景", "month": [2], "type": "秘境", "flower": "昭和櫻", "fee": "需預約", "desc": "上帝的部落，全台最難抵達的粉紅仙境。"},
-    {"name": "新竹觀霧山莊", "region": "北部", "zone": "深山絕景", "month": [3], "type": "秘境", "flower": "霧社櫻王", "fee": "免門票", "desc": "【雪霸秘境】全台最大霧社櫻王，雪白如雲。"},
+    # === 🏙️ 台北/新北 (都會與近郊) ===
+    {"name": "淡水天元宮", "region": "北部", "loc": "新北淡水", "month": [2, 3], "flower": "三色櫻/吉野櫻", "fee": "免費", "tags": ["地標", "夜櫻", "網美"], "desc": "無極真元天壇與櫻花交織，全台最經典。"},
+    {"name": "內湖樂活公園", "region": "北部", "loc": "台北內湖", "month": [2], "flower": "寒櫻/八重櫻", "fee": "免費", "tags": ["夜櫻", "捷運", "親子"], "desc": "搭捷運就能到！沿著溪畔的夢幻夜櫻。"},
+    {"name": "陽明山平菁街42巷", "region": "北部", "loc": "台北士林", "month": [1, 2], "flower": "寒櫻", "fee": "免費", "tags": ["巷弄", "早鳥", "攝影"], "desc": "台北第一波櫻花，圍牆探出的粉紅花海。"},
+    {"name": "中正紀念堂", "region": "北部", "loc": "台北中正", "month": [2, 3], "flower": "大漁櫻/八重櫻", "fee": "免費", "tags": ["捷運", "易達", "散步"], "desc": "市中心最方便的賞櫻點，藍白建築配粉花。"},
+    {"name": "三峽大熊櫻花林", "region": "北部", "loc": "新北三峽", "month": [1, 2, 3], "flower": "三色櫻", "fee": "$250", "tags": ["大景", "夜櫻", "私人"], "desc": "4000棵櫻花染紅山頭，夜間點燈超浪漫。"},
+    {"name": "烏來觀光台車", "region": "北部", "loc": "新北烏來", "month": [2], "flower": "山櫻/八重櫻", "fee": "免費", "tags": ["溫泉", "火車", "老街"], "desc": "搭台車看瀑布賞櫻花，順便泡湯吃香腸。"},
+    {"name": "三芝三生步道", "region": "北部", "loc": "新北三芝", "month": [3], "flower": "吉野櫻", "fee": "免費", "tags": ["步道", "流水", "平地"], "desc": "小橋流水人家，沿著溪岸綿延2公里的櫻花。"},
 
-    # --- 中部 (Central) ---
-    {"name": "武陵農場", "region": "中部", "zone": "深山絕景", "month": [2], "type": "賞花", "flower": "紅粉佳人", "fee": "門票$160", "desc": "台灣賞櫻首選，綿延三公里的粉紅隧道。"},
-    {"name": "福壽山農場", "region": "中部", "zone": "深山絕景", "month": [2, 3], "type": "賞花", "flower": "千島櫻", "fee": "門票$100", "desc": "全台最高海拔櫻花園，偽出國感最強。"},
-    {"name": "雲林草嶺石壁", "region": "中部", "zone": "深山絕景", "month": [2, 3], "type": "秘境", "flower": "白花山櫻/杏花", "fee": "免門票", "desc": "【近年爆紅】全台絕無僅有的白色山櫻花秘境。"},
-    {"name": "九族文化村", "region": "中部", "zone": "市區近郊", "month": [2, 3], "type": "樂園", "flower": "八重櫻", "fee": "門票$900", "desc": "日本認證賞櫻名所，夜櫻必看。"},
-    {"name": "后里泰安派出所", "region": "中部", "zone": "市區近郊", "month": [2], "type": "兜風", "flower": "八重櫻", "fee": "免門票", "desc": "全台最美派出所，平地賞櫻首選。"},
+    # === ⛰️ 桃竹苗 (山城秘境) ===
+    {"name": "司馬庫斯", "region": "北部", "loc": "新竹尖石", "month": [2], "flower": "昭和櫻", "fee": "預約", "tags": ["深山", "部落", "大景"], "desc": "上帝的部落，一生必去的粉紅仙境。"},
+    {"name": "新竹公園", "region": "北部", "loc": "新竹市區", "month": [2], "flower": "河津櫻", "fee": "免費", "tags": ["玻璃", "野餐", "市區"], "desc": "新竹人的後花園，麗池旁的日式風情。"},
+    {"name": "山上人家", "region": "北部", "loc": "新竹五峰", "month": [2, 3], "flower": "吉野櫻", "fee": "$200", "tags": ["茶園", "雲海", "攝影"], "desc": "翠綠茶園與粉嫩櫻花的絕美對比。"},
+    {"name": "觀霧山莊", "region": "北部", "loc": "苗栗泰安", "month": [3], "flower": "霧社櫻", "fee": "免費", "tags": ["霧社櫻王", "深山", "雪白"], "desc": "全台最大霧社櫻王，滿樹雪白如雲。"},
+    {"name": "協雲宮", "region": "北部", "loc": "苗栗獅潭", "month": [1, 2], "flower": "山櫻花", "fee": "免費", "tags": ["廟宇", "雲海", "攝影"], "desc": "雲霧繚繞的山中廟宇，數千棵櫻花包圍。"},
+    {"name": "銅鑼茶廠", "region": "北部", "loc": "苗栗銅鑼", "month": [2], "flower": "山櫻/吉野櫻", "fee": "$100", "tags": ["火車", "茶園", "追焦"], "desc": "可以拍到火車經過櫻花與茶園的絕佳視角。"},
 
-    # --- 南部 (South) ---
-    {"name": "阿里山國家森林", "region": "南部", "zone": "深山絕景", "month": [3, 4], "type": "賞花", "flower": "吉野櫻(櫻王)", "fee": "門票$200", "desc": "小火車穿梭櫻花林，經典中的經典。"},
-    {"name": "石棹櫻花道", "region": "南部", "zone": "深山絕景", "month": [2, 3], "type": "攝影", "flower": "昭和櫻", "fee": "免門票", "desc": "琉璃光與櫻花夜景。"},
-    {"name": "高雄藤枝森林遊樂區", "region": "南部", "zone": "深山絕景", "month": [1, 2], "type": "健行", "flower": "山櫻花", "fee": "門票$120", "desc": "【南部小溪頭】森濤與櫻花的合奏。"},
-    {"name": "寶山二集團", "region": "南部", "zone": "市區近郊", "month": [1, 2], "type": "健行", "flower": "河津櫻", "fee": "免門票", "desc": "高雄桃源區，南部最早盛開的粉紅花海。"},
-    {"name": "霧台櫻花王", "region": "南部", "zone": "深山絕景", "month": [2], "type": "部落", "flower": "山櫻花", "fee": "清潔費", "desc": "魯凱族部落，30年樹齡的櫻花傳奇。"},
+    # === 🌸 中彰投 (經典大景) ===
+    {"name": "武陵農場", "region": "中部", "loc": "台中和平", "month": [2], "flower": "紅粉佳人", "fee": "$160", "tags": ["必去", "大景", "野餐"], "desc": "台灣賞櫻的代名詞，沒有之一。"},
+    {"name": "福壽山農場", "region": "中部", "loc": "台中和平", "month": [2, 3], "flower": "千島櫻", "fee": "$100", "tags": ["高山", "偽出國", "通訊塔"], "desc": "千櫻園的粉紅風暴，背景是雪山山脈。"},
+    {"name": "后里泰安派出所", "region": "中部", "loc": "台中后里", "month": [2], "flower": "八重櫻", "fee": "免費", "tags": ["平地", "夜櫻", "易達"], "desc": "全台最美派出所，停車場就是滿滿櫻花。"},
+    {"name": "新社櫻木花道", "region": "中部", "loc": "台中新社", "month": [2], "flower": "八重櫻", "fee": "免費", "tags": ["街道", "兜風", "香菇"], "desc": "新社區公所旁的粉紅街道，順便吃香菇火鍋。"},
+    {"name": "九族文化村", "region": "中部", "loc": "南投魚池", "month": [2], "flower": "八重櫻/吉野櫻", "fee": "$900", "tags": ["樂園", "夜櫻", "纜車"], "desc": "全台唯一日本認證賞櫻名所，夜櫻祭必看。"},
+    {"name": "草坪頭玉山觀光茶園", "region": "中部", "loc": "南投信義", "month": [1, 2], "flower": "山櫻/李花", "fee": "$50", "tags": ["茶園", "雙色", "健行"], "desc": "櫻花、李花、桃花齊開，五彩繽紛的山坡。"},
+    {"name": "奧萬大", "region": "中部", "loc": "南投仁愛", "month": [1, 2, 3], "flower": "霧社櫻/山櫻", "fee": "$200", "tags": ["森林", "吊橋", "賞鳥"], "desc": "不只賞楓，春天的奧萬大是櫻花與鳥類天堂。"},
+    {"name": "暨南大學", "region": "中部", "loc": "南投埔里", "month": [2], "flower": "山櫻/八重櫻", "fee": "停車費", "tags": ["校園", "野餐", "大草皮"], "desc": "全台最美校園櫻花季，在櫻花樹下野餐超Chill。"},
+    {"name": "草嶺石壁", "region": "中部", "loc": "雲林古坑", "month": [2, 3], "flower": "白花山櫻", "fee": "免費", "tags": ["秘境", "白色", "步道"], "desc": "全台極罕見的「美人谷」，滿山白花山櫻。"},
+    {"name": "員林藤山步道", "region": "中部", "loc": "彰化員林", "month": [3], "flower": "吉野櫻", "fee": "免費", "tags": ["健行", "市集", "平地"], "desc": "邊爬山邊賞花，週末運動的好去處。"},
 
-    # --- 東部 (East) ---
-    {"name": "宜蘭明池森林遊樂區", "region": "東部", "zone": "深山絕景", "month": [2, 3], "type": "景觀", "flower": "大島櫻/山櫻", "fee": "門票$120", "desc": "【北橫明珠】高山湖泊與櫻花的空靈之美。"},
-    {"name": "太麻里金針山", "region": "東部", "zone": "深山絕景", "month": [1, 2, 3], "type": "健行", "flower": "山櫻", "fee": "免門票", "desc": "雲霧繚繞的東部後花園。"},
-    {"name": "花蓮玉山神學院", "region": "東部", "zone": "市區近郊", "month": [2, 3], "type": "賞花", "flower": "霧社櫻", "fee": "免門票", "desc": "鯉魚潭旁，俯瞰湖光山色。"},
-    {"name": "宜蘭大同櫻花林", "region": "東部", "zone": "市區近郊", "month": [2], "type": "兜風", "flower": "八重櫻", "fee": "免門票", "desc": "台7甲線沿路，通往武陵的前哨站。"}
+    # === 🚂 雲嘉南高屏 (南部熱情) ===
+    {"name": "阿里山森林遊樂區", "region": "南部", "loc": "嘉義阿里山", "month": [3, 4], "flower": "吉野櫻", "fee": "$200", "tags": ["火車", "日出", "必去"], "desc": "小火車穿梭櫻花林，世界級的景觀。"},
+    {"name": "隙頂/石棹", "region": "南部", "loc": "嘉義番路", "month": [2, 3], "flower": "昭和櫻", "fee": "免費", "tags": ["琉璃光", "夜景", "攝影"], "desc": "長曝琉璃光與櫻花同框的攝影聖地。"},
+    {"name": "寒溪呢森林人文叡地", "region": "南部", "loc": "嘉義梅山", "month": [1, 2], "flower": "福爾摩沙櫻", "fee": "$220", "tags": ["太極", "白色", "秘境"], "desc": "周子瑜也去過！白色櫻花隧道通往聖塔山。"},
+    {"name": "梅山36彎", "region": "南部", "loc": "嘉義梅山", "month": [12, 1], "flower": "山櫻", "fee": "免費", "tags": ["公路", "兜風", "早開"], "desc": "開車挑戰36彎，沿途點綴紅色山櫻。"},
+    {"name": "白河關子嶺", "region": "南部", "loc": "台南白河", "month": [1, 2], "flower": "山櫻", "fee": "免費", "tags": ["溫泉", "健行", "美食"], "desc": "紅葉公園賞完花，下山吃甕仔雞泡泥漿溫泉。"},
+    {"name": "烏山頭水庫", "region": "南部", "loc": "台南官田", "month": [3], "flower": "南洋櫻", "fee": "$80", "tags": ["水庫", "香榭", "異國"], "desc": "著名的香榭大道，粉紅花瓣飄落如下雪。"},
+    {"name": "寶山二集團", "region": "南部", "loc": "高雄桃源", "month": [1, 2], "flower": "河津櫻", "fee": "免費", "tags": ["早開", "健行", "南部"], "desc": "南部人不用跑中北部，這裡就有超美粉紅花海。"},
+    {"name": "藤枝森林遊樂區", "region": "南部", "loc": "高雄桃源", "month": [1, 2], "flower": "山櫻", "fee": "$120", "tags": ["森林", "芬多精", "健行"], "desc": "南部小溪頭，在森濤中尋找櫻花蹤影。"},
+    {"name": "霧台櫻花王", "region": "南部", "loc": "屏東霧台", "month": [2], "flower": "山櫻", "fee": "清潔費", "tags": ["部落", "霸氣", "愛玉"], "desc": "一棵樹就開滿整個庭院，魯凱族部落傳奇。"},
+
+    # === 🌊 宜花東 (後山淨土) ===
+    {"name": "宜蘭大同櫻花林", "region": "東部", "loc": "宜蘭大同", "month": [2], "flower": "八重櫻", "fee": "免費", "tags": ["公路", "兜風", "露營"], "desc": "台7甲線沿路都是櫻花，通往武陵的必經之路。"},
+    {"name": "明池森林遊樂區", "region": "東部", "loc": "宜蘭大同", "month": [2, 3], "flower": "大島櫻", "fee": "$120", "tags": ["湖景", "靜謐", "避暑"], "desc": "北橫明珠，湖畔的櫻花帶有一股仙氣。"},
+    {"name": "棲蘭森林遊樂區", "region": "東部", "loc": "宜蘭大同", "month": [2], "flower": "紅粉佳人", "fee": "$100", "tags": ["神木", "住宿", "歷史"], "desc": "蔣公行館前的櫻花王，滿開時非常壯觀。"},
+    {"name": "羅莊櫻花步道", "region": "東部", "loc": "宜蘭羅東", "month": [2, 3], "flower": "墨染櫻", "fee": "免費", "tags": ["平地", "水岸", "夜櫻"], "desc": "平地最美櫻花河岸，倒影非常迷人。"},
+    {"name": "玉山神學院", "region": "東部", "loc": "花蓮壽豐", "month": [2, 3], "flower": "霧社櫻", "fee": "免費", "tags": ["湖景", "學術", "寧靜"], "desc": "俯瞰鯉魚潭，白色霧社櫻配上湖光山色。"},
+    {"name": "太麻里金針山", "region": "東部", "loc": "台東太麻里", "month": [1, 2], "flower": "山櫻/八重櫻", "fee": "免費", "tags": ["日出", "登山", "雲霧"], "desc": "不只金針花，春天的青山農場櫻花步道超美。"}
 ]
 
 # ==========================================
-# 4. 邏輯核心：環島行程生成器
+# 4. 邏輯核心：智慧搜尋與推薦
 # ==========================================
-def generate_itinerary(travel_date, days_option, group, target_region):
-    m = travel_date.month
-    
-    # 提取天數數字 (Robust parsing)
-    if "5日" in days_option: total_days = 5
-    elif "7日" in days_option: total_days = 7
-    elif "10日" in days_option: total_days = 10
-    elif "一日" in days_option: total_days = 1
-    elif "二日" in days_option: total_days = 2
-    else: total_days = 3
-
-    itinerary = {}
-    
-    # === 模式 A: 環島模式 (Round Island) ===
-    if target_region == "🌸 全臺環島 (蘇區長特推)":
-        # 1. Day 1: 桃園 (Taoyuan Must)
-        taoyuan_spots = [s for s in all_spots_db if "復興" in s['name'] or "拉拉山" in s['name'] or "東眼山" in s['name']]
-        # 確保該月份有花，若無則選角板山(最保險)
-        valid_taoyuan = [s for s in taoyuan_spots if m in s['month']]
+def search_spots(keyword, region_filter, tag_filter):
+    results = []
+    for spot in all_spots_db:
+        # 1. 地區篩選
+        if region_filter != "全台" and spot['region'] != region_filter:
+            continue
         
-        if not valid_taoyuan:
-            d1_spot1 = taoyuan_spots[1] # 預設角板山
-        else:
-            d1_spot1 = valid_taoyuan[0]
-            
-        remaining_taoyuan = [s for s in taoyuan_spots if s['name'] != d1_spot1['name']]
-        d1_spot2 = remaining_taoyuan[0] if remaining_taoyuan else d1_spot1
+        # 2. 關鍵字搜尋 (名稱、地點、描述)
+        if keyword:
+            if (keyword not in spot['name'] and 
+                keyword not in spot['loc'] and 
+                keyword not in spot['desc'] and
+                keyword not in spot['flower']):
+                continue
         
-        itinerary[1] = [d1_spot1, d1_spot2]
-        
-        # 2. 其餘天數分配
-        central = [s for s in all_spots_db if s['region'] == "中部" and m in s['month']]
-        south = [s for s in all_spots_db if s['region'] == "南部" and m in s['month']]
-        east = [s for s in all_spots_db if s['region'] == "東部" and m in s['month']]
-        north_others = [s for s in all_spots_db if s['region'] == "北部" and "復興" not in s['name'] and m in s['month']]
-        
-        # 補充清單 (防呆)
-        if not central: central = [s for s in all_spots_db if s['region'] == "中部"][:2]
-        if not south: south = [s for s in all_spots_db if s['region'] == "南部"][:2]
-        if not east: east = [s for s in all_spots_db if s['region'] == "東部"][:2]
-        
-        # 動態填入 (根據天數延展)
-        current_day = 2
-        
-        # Day 2-3: 中部
-        if current_day <= total_days:
-            # 優先推薦草嶺石壁(如果有花)
-            if any("草嶺" in s['name'] for s in central):
-                c_spot = next(s for s in central if "草嶺" in s['name'])
-                itinerary[current_day] = [c_spot, central[0] if central[0]!=c_spot else central[1]]
-            else:
-                itinerary[current_day] = [central[0], central[1] if len(central)>1 else central[0]]
-            current_day += 1
-            
-        if total_days >= 5 and current_day <= total_days:
-             s_extra = central[-1] if len(central) > 2 else {"name": "清境農場", "region": "中部", "zone": "順遊", "desc": "雲端上的綿羊城堡", "flower": "草原"}
-             itinerary[current_day] = [s_extra, {"name": "日月潭環湖", "region": "中部", "zone": "順遊", "desc": "全球最美自行車道", "flower": "湖景"}]
-             current_day += 1
-             
-        # Day 4-5: 南部
-        if current_day <= total_days:
-            itinerary[current_day] = [south[0], south[1] if len(south)>1 else south[0]]
-            current_day += 1
-        if total_days >= 7 and current_day <= total_days:
-             s_extra_s = south[-1] if len(south) > 2 else {"name": "台南赤崁樓", "region": "南部", "zone": "順遊", "desc": "古蹟美食巡禮", "flower": "人文"}
-             itinerary[current_day] = [s_extra_s, {"name": "高雄駁二", "region": "南部", "zone": "順遊", "desc": "港都藝術特區", "flower": "海景"}]
-             current_day += 1
-
-        # Day 6-7: 東部
-        if current_day <= total_days:
-            itinerary[current_day] = [east[0], east[1] if len(east)>1 else east[0]]
-            current_day += 1
-        if total_days >= 7 and current_day <= total_days:
-             s_extra_e = east[-1] if len(east) > 2 else {"name": "花東縱谷", "region": "東部", "zone": "順遊", "desc": "縱谷花海畫布", "flower": "油菜花"}
-             itinerary[current_day] = [s_extra_e, {"name": "池上伯朗大道", "region": "東部", "zone": "順遊", "desc": "金城武樹下乘涼", "flower": "稻浪"}]
-             current_day += 1
-             
-        # Day 8+: 回北部/收尾
-        while current_day <= total_days:
-            leftover = north_others if north_others else taoyuan_spots
-            s_end = leftover[0] if leftover else {"name": "台北101", "region": "北部", "desc": "都會繁華", "flower": "夜景"}
-            itinerary[current_day] = [s_end, {"name": "快樂賦歸", "region": "全台", "zone": "市區", "desc": "購買伴手禮", "flower": "回憶"}]
-            current_day += 1
-
-        title = f"🌸 {total_days}天環島賞櫻大縱走 (桃園出發)"
-
-    # === 模式 B: 單一區域深度遊 ===
-    else:
-        # 篩選邏輯
-        region_spots = [s for s in all_spots_db if s['region'] == target_region]
-        available_spots = [s for s in region_spots if m in s['month']]
-        if not available_spots: available_spots = region_spots[:3]
-        
-        # 確保若選北部，桃園一定在其中
-        if target_region == "北部":
-             taoyuan_must = [s for s in all_spots_db if "復興" in s['name'] or "拉拉山" in s['name']]
-             for t in taoyuan_must:
-                 is_in_list = any(s['name'] == t['name'] for s in available_spots)
-                 if not is_in_list and m in t['month']:
-                     available_spots.insert(0, t)
-
-        # 簡單分配
-        for d in range(1, total_days + 1):
-            idx1 = (d - 1) * 2 % len(available_spots)
-            idx2 = ((d - 1) * 2 + 1) % len(available_spots)
-            
-            s1 = available_spots[idx1]
-            s2 = available_spots[idx2]
-            
-            # 若天數很多，避免景點重複
-            if d > 3 and s1['name'] == available_spots[0]['name']:
-                s1 = {"name": f"{target_region}私房秘境", "region": target_region, "zone": "秘境", "desc": "在地人推薦的隱藏版", "flower": "驚喜"}
-            
-            itinerary[d] = [s1, s2]
-
-        title = f"🌸 {target_region} {total_days}日深度賞櫻"
-
-    return title, itinerary
+        # 3. 標籤篩選
+        if tag_filter != "不限":
+            if tag_filter not in spot['tags']:
+                continue
+                
+        results.append(spot)
+    return results
 
 # ==========================================
-# 5. 頁面內容 (UI)
+# 5. UI 呈現
 # ==========================================
 st.markdown("""
     <div class="header-box">
-        <div class="header-title">🌸 2026 全國賞櫻環島地圖</div>
-        <div class="header-subtitle">復興區長 <b>蘇佐璽</b> 嚴選．桃園出發．遊遍全臺 ❤️</div>
+        <div class="header-title">🌸 2026 全國賞櫻百科</div>
+        <div style="color:white; opacity:0.9; margin-top:10px;">
+            復興區長 <b>蘇佐璽</b> 嚴選｜收錄全台 <b>{count}</b> 個賞櫻秘境
+        </div>
     </div>
-""", unsafe_allow_html=True)
+""".format(count=len(all_spots_db)), unsafe_allow_html=True)
 
+# --- 搜尋控制台 ---
 with st.container():
-    st.markdown('<div class="input-card">', unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
-    with col1:
-        # 地區選擇：包含環島選項
-        target_region = st.selectbox(
-            "想去哪裡賞櫻？", 
-            ["🌸 全臺環島 (蘇區長特推)", "北部", "中部", "南部", "東部"]
-        )
-        travel_date = st.date_input("預計出發日期", value=date(2026, 2, 20), min_value=date(2026, 1, 1), max_value=date(2026, 4, 30))
-    with col2:
-        # 天數選擇：包含長天數
-        days_options = ["5日遊 (半島精華)", "7日遊 (全島大縱走)", "10日遊 (慢活深度)", "一日遊 (快閃)", "二日遊 (輕旅)", "三日遊 (經典)"]
-        days = st.selectbox("行程天數", days_options)
-        group = st.selectbox("出遊夥伴", ["情侶/夫妻", "親子家庭", "長輩樂齡", "熱血獨旅"])
-    
-    generate_btn = st.button("🚀 生成蘇區長推薦行程")
+    st.markdown('<div class="search-box">', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([1, 1, 2])
+    with c1:
+        region = st.selectbox("📍 選擇區域", ["全台", "北部", "中部", "南部", "東部"])
+    with c2:
+        tag = st.selectbox("🏷️ 特色篩選", ["不限", "秘境", "親子", "夜櫻", "平地", "大景", "免費", "捷運"])
+    with c3:
+        keyword = st.text_input("🔍 關鍵字搜尋", placeholder="輸入：武陵、桃園、拉拉山...")
     st.markdown('</div>', unsafe_allow_html=True)
 
-if generate_btn:
-    status_title, itinerary = generate_itinerary(travel_date, days, group, target_region)
-    
-    st.markdown(f"""
-    <div class="info-box">
-        <div class="weather-tag">{status_title}</div>
-        <div>根據您選擇的 <b>{days}</b>，蘇區長為 <b>{group}</b> 規劃了包含 <b>桃園復興區</b> 在內的最佳賞花路徑。</div>
-    </div>
-    """, unsafe_allow_html=True)
+# --- 搜尋結果 ---
+results = search_spots(keyword, region, tag)
 
-    tab1, tab2, tab3 = st.tabs(["🗓️ 每日行程細節", "💰 預算與住宿", "🚗 交通建議"])
-
-    # --- Tab 1: 動態行程 ---
-    with tab1:
-        for day_num, spots in itinerary.items():
-            st.markdown(f'<div class="day-header">Day {day_num}</div>', unsafe_allow_html=True)
-            
-            # 第一個景點
-            s1 = spots[0]
-            # 判斷標記
-            badge = ""
-            if "復興" in s1['name'] or "拉拉山" in s1['name']:
-                badge = '<span class="taoyuan-badge">蘇區長大推</span>'
-            elif "秘境" in s1.get('desc', '') or "爆紅" in s1.get('desc', ''):
-                badge = '<span class="secret-badge">隱藏版</span>'
-            
-            st.markdown(f"""
-            <div class="timeline-item">
-                <div class="spot-title">09:00 {s1['name']} {badge} <span class="spot-tag">{s1.get('zone','')}</span></div>
-                <div class="spot-desc">{s1['desc']} ({s1.get('flower','')})</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # 午餐
-            lunch_loc = "復興區原民風味餐" if "復興" in s1['name'] else "當地特色美食"
-            st.markdown(f"""
-            <div class="timeline-item">
-                <div class="spot-title">12:30 午餐時間</div>
-                <div class="spot-desc">推薦品嚐：{lunch_loc}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # 第二個景點
-            s2 = spots[1]
-            badge2 = ""
-            if "復興" in s2['name'] or "拉拉山" in s2['name']:
-                badge2 = '<span class="taoyuan-badge">蘇區長大推</span>'
-            elif "秘境" in s2.get('desc', '') or "爆紅" in s2.get('desc', ''):
-                badge2 = '<span class="secret-badge">隱藏版</span>'
-            
-            st.markdown(f"""
-            <div class="timeline-item">
-                <div class="spot-title">14:30 {s2['name']} {badge2} <span class="spot-tag">{s2.get('zone','')}</span></div>
-                <div class="spot-desc">{s2['desc']}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # 住宿建議
-            region_stay = s2.get('region', target_region)
-            if region_stay == "全台": region_stay = "溫暖的家"
-            
-            st.markdown(f"""
-            <div class="timeline-item" style="border-color:#9370DB;">
-                <div class="spot-title" style="color:#9370DB !important;">18:00 夜宿：{region_stay}</div>
-                <div class="spot-desc">建議選擇該區域特色民宿或飯店。</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-    # --- Tab 2: 預算 ---
-    with tab2:
-        days_num = len(itinerary)
-        est_cost = days_num * 3500 # 概抓每天花費
-        st.subheader(f"💵 {days} 預算預估")
-        st.metric("每人預估費用 (含食宿行)", f"NT$ {est_cost:,}")
-        st.info("💡 蘇區長貼心提醒：環島長天數行程建議提早預訂「拉拉山」與「武陵農場」的住宿，通常需半年前搶訂！")
-
-    # --- Tab 3: 交通 ---
-    with tab3:
-        st.subheader("🚗 環島交通策略")
-        if target_region == "🌸 全臺環島 (蘇區長特推)":
-            st.success("**建議逆時針環島**：桃園出發 -> 新竹 -> 台中 -> 高雄 -> 台東 -> 花蓮 -> 宜蘭 -> 台北。")
-            st.warning("⚠️ **北橫公路 (台7線)**：若要從桃園復興直接前往宜蘭，請務必先查詢路況，櫻花季期間車流量大且偶有管制。")
-        else:
-            st.info(f"前往 **{target_region}** 建議搭乘高鐵至主要城市後租車，機動性最高。")
-
+if not results:
+    st.warning("😅 哎呀！蘇區長努力找了，但找不到符合條件的景點。試著放寬搜尋條件看看？")
 else:
-    st.info("👆 請在上方選擇「全臺環島」並設定天數 (5-10天)，開始您的粉紅大冒險！")
+    st.success(f"🎉 找到 **{len(results)}** 個絕美賞櫻點！趕快筆記下來！")
+    
+    # 使用 Grid 排版 (3欄)
+    cols = st.columns(3)
+    for i, spot in enumerate(results):
+        with cols[i % 3]:
+            # 動態生成標籤 HTML
+            tags_html = "".join([f'<span class="badge b-tag">{t}</span>' for t in spot['tags']])
+            if "秘境" in spot['tags']: tags_html = f'<span class="badge b-secret">隱藏版</span>' + tags_html
+            
+            st.markdown(f"""
+            <div class="spot-card">
+                <h3 style="color:#C71585; margin-bottom:5px;">{spot['name']}</h3>
+                <div style="font-size:14px; color:#666; margin-bottom:10px;">
+                    📍 {spot['loc']} | 🌸 {spot['flower']}
+                </div>
+                <div style="margin-bottom:10px;">
+                    <span class="badge b-region">{spot['region']}</span>
+                    {tags_html}
+                </div>
+                <p style="font-size:15px; line-height:1.5;">{spot['desc']}</p>
+                <hr style="border-top: 1px dashed #FFB6C1;">
+                <div style="display:flex; justify-content:space-between; font-size:13px; color:#888;">
+                    <span>📅 花期: {spot['month'][0]}-{spot['month'][-1]}月</span>
+                    <span>💰 {spot['fee']}</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+# --- 底部彩蛋 ---
+st.markdown("---")
+st.markdown("""
+<div style="text-align:center; padding:20px; color:#666;">
+    💡 <b>蘇區長小叮嚀</b>：花況受氣候影響很大，出發前建議先查看該景點的官方粉專最新花況喔！<br>
+    尤其是 <b style="color:#C71585;">桃園復興區</b> 的櫻花，每年都美到像置身國外，一定要來玩！
+</div>
+""", unsafe_allow_html=True)
