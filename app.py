@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. CSS 美學 (完全繼承原版設計)
+# 2. CSS 美學 (強制粉色主題與深色模式相容修復)
 # ==========================================
 st.markdown("""
     <style>
@@ -25,7 +25,7 @@ st.markdown("""
     }
     
     /* 2. 強制所有一般文字元素為深色 */
-    p, div, span, h1, h2, h3, h4, h5, h6, label, .stMarkdown {
+    p, div, span, h1, h2, h3, h4, h5, h6, label, .stMarkdown, .stText {
         color: #333333 !important;
     }
 
@@ -61,6 +61,7 @@ st.markdown("""
     }
     .header-box h1, .header-box div, .header-box span { color: white !important; }
     .header-title { font-size: 28px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+    .header-subtitle { font-size: 16px; margin-top: 5px; opacity: 0.9; }
     
     /* 輸入卡片 */
     .input-card {
@@ -84,6 +85,10 @@ st.markdown("""
         transition: 0.3s;
         font-size: 18px;
     }
+    .stButton>button:hover {
+        background-color: #C71585;
+        box-shadow: 0 4px 12px rgba(255, 20, 147, 0.3);
+    }
     
     /* 資訊看板 */
     .info-box {
@@ -92,13 +97,20 @@ st.markdown("""
         padding: 15px;
         border-radius: 5px;
         margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .weather-tag {
+        font-weight: bold;
+        color: #D48806 !important;
+        font-size: 18px;
+        margin-bottom: 5px;
     }
     
     /* 時間軸 */
     .timeline-item {
         border-left: 3px solid #FF69B4;
         padding-left: 20px;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
         position: relative;
     }
     .timeline-item::before {
@@ -108,43 +120,49 @@ st.markdown("""
         top: 0;
         background: #FFF0F5;
         border-radius: 50%;
+        font-size: 18px;
     }
     .day-header {
         background: #FFE4E1;
         color: #C71585 !important;
-        padding: 5px 15px;
-        border-radius: 15px;
+        padding: 8px 20px;
+        border-radius: 20px;
         display: inline-block;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        margin-top: 10px;
         font-weight: bold;
+        font-size: 16px;
     }
     .spot-title { font-weight: bold; color: #C71585 !important; font-size: 18px; }
+    .spot-desc { font-size: 14px; color: #555 !important; margin-top: 3px; }
     .spot-tag { 
         font-size: 12px; background: #FFE4E1; color: #D87093 !important; 
-        padding: 2px 8px; border-radius: 10px; margin-right: 5px;
+        padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle;
     }
     
     /* 住宿卡片 */
     .hotel-card {
         background: #F8F8FF;
         border-left: 5px solid #9370DB;
-        padding: 10px;
+        padding: 15px;
         border-radius: 8px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        transition: transform 0.2s;
     }
+    .hotel-card:hover { transform: translateY(-2px); }
     
     /* 景點名錄小卡 */
     .mini-card {
         background: white;
-        padding: 10px;
+        padding: 12px;
         border-radius: 8px;
         border: 1px solid #eee;
         font-size: 14px;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         border-left: 3px solid #FF69B4;
     }
     .flower-badge {
-        background: #FF69B4; color: white !important; padding: 1px 5px; border-radius: 4px; font-size: 11px; margin-left: 5px;
+        background: #FF69B4; color: white !important; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 5px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -222,7 +240,7 @@ def generate_dynamic_itinerary(travel_date, days_str, group, target_region):
     easy_spots = [s for s in available_spots if s['zone'] == "市區近郊"]
     deep_spots = [s for s in available_spots if s['zone'] == "深山絕景"]
     
-    # 確保列表不為空
+    # 確保列表不為空，避免 IndexError
     if not easy_spots: easy_spots = available_spots
     if not deep_spots: deep_spots = available_spots
     
@@ -263,7 +281,15 @@ def generate_dynamic_itinerary(travel_date, days_str, group, target_region):
             "北部": "淡水老街/台北101", "中部": "台中歌劇院/宮原眼科", 
             "南部": "檜意森活村/駁二", "東部": "花蓮東大門/宜蘭傳藝"
         }
-        d3_spot2 = {"name": souvenir_map.get(target_region, "市區商圈"), "region": target_region, "flower": "人文", "type": "採買", "fee": "免門票", "desc": "快樂賦歸，購買伴手禮。"}
+        d3_spot2 = {
+            "name": souvenir_map.get(target_region, "市區商圈"), 
+            "region": target_region, 
+            "zone": "市區近郊",
+            "flower": "人文", 
+            "type": "採買", 
+            "fee": "免門票", 
+            "desc": "快樂賦歸，購買伴手禮。"
+        }
         
         itinerary[3] = [d3_spot1, d3_spot2]
 
@@ -341,14 +367,14 @@ if generate_btn:
             if day_num < len(itinerary):
                  st.markdown(f"""
                 <div class="timeline-item" style="border-color:#9370DB;">
-                    <div class="spot-title" style="color:#9370DB;">18:00 入住 {target_region} 精選旅宿</div>
+                    <div class="spot-title" style="color:#9370DB !important;">18:00 入住 {target_region} 精選旅宿</div>
                     <div class="spot-desc">建議選擇下方「交通住宿」頁籤中的推薦飯店。</div>
                 </div>
                 """, unsafe_allow_html=True)
             else:
                  st.markdown(f"""
                 <div class="timeline-item" style="border-color:#4CAF50;">
-                    <div class="spot-title" style="color:#4CAF50;">17:00 快樂賦歸</div>
+                    <div class="spot-title" style="color:#4CAF50 !important;">17:00 快樂賦歸</div>
                     <div class="spot-desc">帶著滿滿的照片與回憶回家。</div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -398,13 +424,14 @@ if generate_btn:
         
         st.caption(f"根據您的目的地 **{target_region}**，蘇區長推薦以下優質旅宿：")
         
+        # 使用 enumerate 來控制列數
         cols = st.columns(2)
         for i, h in enumerate(filtered_hotels):
             with cols[i % 2]:
                 st.markdown(f"""
                 <div class="hotel-card">
                     <div style="font-weight:bold;">{h['name']} <span style="font-size:12px; color:#666;">({h['price']}元起)</span></div>
-                    <div style="font-size:12px; margin-top:5px;">🏷️ {h['tag']} | {h['desc']}</div>
+                    <div style="font-size:12px; margin-top:5px; color:#555;">🏷️ {h['tag']} | {h['desc']}</div>
                 </div>
                 """, unsafe_allow_html=True)
 
