@@ -137,11 +137,16 @@ st.markdown("""
     .taoyuan-badge {
         background: #9370DB; color: white !important; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 5px;
     }
+    
+    /* 新增：秘境標記 */
+    .secret-badge {
+        background: #FF4500; color: white !important; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 5px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. 核心資料庫 (新增桃園重點與環島節點)
+# 3. 核心資料庫 (擴充秘境版)
 # ==========================================
 all_spots_db = [
     # --- 桃園 (Taoyuan - Must Have) ---
@@ -151,22 +156,27 @@ all_spots_db = [
     {"name": "中巴陵櫻木花道", "region": "北部", "zone": "深山絕景", "month": [2], "type": "秘境", "flower": "昭和櫻", "fee": "免門票", "desc": "北橫公路上的粉紅隧道，攝影師最愛。"},
 
     # --- 北部 (Other North) ---
+    {"name": "三峽大熊櫻花林", "region": "北部", "zone": "市區近郊", "month": [1, 2, 3], "type": "網美", "flower": "三色櫻/八重櫻", "fee": "門票$250", "desc": "【新北必去】4000棵櫻花林，夜櫻拍攝聖地。"},
     {"name": "淡水天元宮", "region": "北部", "zone": "市區近郊", "month": [2, 3], "type": "網美", "flower": "吉野櫻", "fee": "免門票", "desc": "天壇與夜櫻的絕美構圖。"},
     {"name": "司馬庫斯", "region": "北部", "zone": "深山絕景", "month": [2], "type": "秘境", "flower": "昭和櫻", "fee": "需預約", "desc": "上帝的部落，全台最難抵達的粉紅仙境。"},
+    {"name": "新竹觀霧山莊", "region": "北部", "zone": "深山絕景", "month": [3], "type": "秘境", "flower": "霧社櫻王", "fee": "免門票", "desc": "【雪霸秘境】全台最大霧社櫻王，雪白如雲。"},
 
     # --- 中部 (Central) ---
     {"name": "武陵農場", "region": "中部", "zone": "深山絕景", "month": [2], "type": "賞花", "flower": "紅粉佳人", "fee": "門票$160", "desc": "台灣賞櫻首選，綿延三公里的粉紅隧道。"},
     {"name": "福壽山農場", "region": "中部", "zone": "深山絕景", "month": [2, 3], "type": "賞花", "flower": "千島櫻", "fee": "門票$100", "desc": "全台最高海拔櫻花園，偽出國感最強。"},
+    {"name": "雲林草嶺石壁", "region": "中部", "zone": "深山絕景", "month": [2, 3], "type": "秘境", "flower": "白花山櫻/杏花", "fee": "免門票", "desc": "【近年爆紅】全台絕無僅有的白色山櫻花秘境。"},
     {"name": "九族文化村", "region": "中部", "zone": "市區近郊", "month": [2, 3], "type": "樂園", "flower": "八重櫻", "fee": "門票$900", "desc": "日本認證賞櫻名所，夜櫻必看。"},
     {"name": "后里泰安派出所", "region": "中部", "zone": "市區近郊", "month": [2], "type": "兜風", "flower": "八重櫻", "fee": "免門票", "desc": "全台最美派出所，平地賞櫻首選。"},
 
     # --- 南部 (South) ---
     {"name": "阿里山國家森林", "region": "南部", "zone": "深山絕景", "month": [3, 4], "type": "賞花", "flower": "吉野櫻(櫻王)", "fee": "門票$200", "desc": "小火車穿梭櫻花林，經典中的經典。"},
     {"name": "石棹櫻花道", "region": "南部", "zone": "深山絕景", "month": [2, 3], "type": "攝影", "flower": "昭和櫻", "fee": "免門票", "desc": "琉璃光與櫻花夜景。"},
+    {"name": "高雄藤枝森林遊樂區", "region": "南部", "zone": "深山絕景", "month": [1, 2], "type": "健行", "flower": "山櫻花", "fee": "門票$120", "desc": "【南部小溪頭】森濤與櫻花的合奏。"},
     {"name": "寶山二集團", "region": "南部", "zone": "市區近郊", "month": [1, 2], "type": "健行", "flower": "河津櫻", "fee": "免門票", "desc": "高雄桃源區，南部最早盛開的粉紅花海。"},
     {"name": "霧台櫻花王", "region": "南部", "zone": "深山絕景", "month": [2], "type": "部落", "flower": "山櫻花", "fee": "清潔費", "desc": "魯凱族部落，30年樹齡的櫻花傳奇。"},
 
     # --- 東部 (East) ---
+    {"name": "宜蘭明池森林遊樂區", "region": "東部", "zone": "深山絕景", "month": [2, 3], "type": "景觀", "flower": "大島櫻/山櫻", "fee": "門票$120", "desc": "【北橫明珠】高山湖泊與櫻花的空靈之美。"},
     {"name": "太麻里金針山", "region": "東部", "zone": "深山絕景", "month": [1, 2, 3], "type": "健行", "flower": "山櫻", "fee": "免門票", "desc": "雲霧繚繞的東部後花園。"},
     {"name": "花蓮玉山神學院", "region": "東部", "zone": "市區近郊", "month": [2, 3], "type": "賞花", "flower": "霧社櫻", "fee": "免門票", "desc": "鯉魚潭旁，俯瞰湖光山色。"},
     {"name": "宜蘭大同櫻花林", "region": "東部", "zone": "市區近郊", "month": [2], "type": "兜風", "flower": "八重櫻", "fee": "免門票", "desc": "台7甲線沿路，通往武陵的前哨站。"}
@@ -195,7 +205,6 @@ def generate_itinerary(travel_date, days_option, group, target_region):
         # 確保該月份有花，若無則選角板山(最保險)
         valid_taoyuan = [s for s in taoyuan_spots if m in s['month']]
         
-        # 避免 valid_taoyuan 為空
         if not valid_taoyuan:
             d1_spot1 = taoyuan_spots[1] # 預設角板山
         else:
@@ -207,13 +216,12 @@ def generate_itinerary(travel_date, days_option, group, target_region):
         itinerary[1] = [d1_spot1, d1_spot2]
         
         # 2. 其餘天數分配
-        # 獲取各地區有效景點
         central = [s for s in all_spots_db if s['region'] == "中部" and m in s['month']]
         south = [s for s in all_spots_db if s['region'] == "南部" and m in s['month']]
         east = [s for s in all_spots_db if s['region'] == "東部" and m in s['month']]
         north_others = [s for s in all_spots_db if s['region'] == "北部" and "復興" not in s['name'] and m in s['month']]
         
-        # 補充清單 (防呆 - 避免空列表導致 crash)
+        # 補充清單 (防呆)
         if not central: central = [s for s in all_spots_db if s['region'] == "中部"][:2]
         if not south: south = [s for s in all_spots_db if s['region'] == "南部"][:2]
         if not east: east = [s for s in all_spots_db if s['region'] == "東部"][:2]
@@ -223,9 +231,15 @@ def generate_itinerary(travel_date, days_option, group, target_region):
         
         # Day 2-3: 中部
         if current_day <= total_days:
-            itinerary[current_day] = [central[0], central[1] if len(central)>1 else central[0]]
+            # 優先推薦草嶺石壁(如果有花)
+            if any("草嶺" in s['name'] for s in central):
+                c_spot = next(s for s in central if "草嶺" in s['name'])
+                itinerary[current_day] = [c_spot, central[0] if central[0]!=c_spot else central[1]]
+            else:
+                itinerary[current_day] = [central[0], central[1] if len(central)>1 else central[0]]
             current_day += 1
-        if total_days >= 5 and current_day <= total_days: # 5天以上多給中部一天
+            
+        if total_days >= 5 and current_day <= total_days:
              s_extra = central[-1] if len(central) > 2 else {"name": "清境農場", "region": "中部", "zone": "順遊", "desc": "雲端上的綿羊城堡", "flower": "草原"}
              itinerary[current_day] = [s_extra, {"name": "日月潭環湖", "region": "中部", "zone": "順遊", "desc": "全球最美自行車道", "flower": "湖景"}]
              current_day += 1
@@ -234,7 +248,7 @@ def generate_itinerary(travel_date, days_option, group, target_region):
         if current_day <= total_days:
             itinerary[current_day] = [south[0], south[1] if len(south)>1 else south[0]]
             current_day += 1
-        if total_days >= 7 and current_day <= total_days: # 7天以上多給南部一天
+        if total_days >= 7 and current_day <= total_days:
              s_extra_s = south[-1] if len(south) > 2 else {"name": "台南赤崁樓", "region": "南部", "zone": "順遊", "desc": "古蹟美食巡禮", "flower": "人文"}
              itinerary[current_day] = [s_extra_s, {"name": "高雄駁二", "region": "南部", "zone": "順遊", "desc": "港都藝術特區", "flower": "海景"}]
              current_day += 1
@@ -264,7 +278,7 @@ def generate_itinerary(travel_date, days_option, group, target_region):
         available_spots = [s for s in region_spots if m in s['month']]
         if not available_spots: available_spots = region_spots[:3]
         
-        # 確保若選北部，桃園一定在其中 (優先插入)
+        # 確保若選北部，桃園一定在其中
         if target_region == "北部":
              taoyuan_must = [s for s in all_spots_db if "復興" in s['name'] or "拉拉山" in s['name']]
              for t in taoyuan_must:
@@ -275,12 +289,12 @@ def generate_itinerary(travel_date, days_option, group, target_region):
         # 簡單分配
         for d in range(1, total_days + 1):
             idx1 = (d - 1) * 2 % len(available_spots)
-            idx2 = ((d - 1) * 2 + 1) % len(available_spots) # Modulo fix for safety
+            idx2 = ((d - 1) * 2 + 1) % len(available_spots)
             
             s1 = available_spots[idx1]
             s2 = available_spots[idx2]
             
-            # 若天數很多，避免景點重複太嚴重，插入隱藏版
+            # 若天數很多，避免景點重複
             if d > 3 and s1['name'] == available_spots[0]['name']:
                 s1 = {"name": f"{target_region}私房秘境", "region": target_region, "zone": "秘境", "desc": "在地人推薦的隱藏版", "flower": "驚喜"}
             
@@ -338,8 +352,12 @@ if generate_btn:
             
             # 第一個景點
             s1 = spots[0]
-            # 判斷是否為蘇區長本命區
-            badge = '<span class="taoyuan-badge">蘇區長大推</span>' if "復興" in s1['name'] or "拉拉山" in s1['name'] else ""
+            # 判斷標記
+            badge = ""
+            if "復興" in s1['name'] or "拉拉山" in s1['name']:
+                badge = '<span class="taoyuan-badge">蘇區長大推</span>'
+            elif "秘境" in s1.get('desc', '') or "爆紅" in s1.get('desc', ''):
+                badge = '<span class="secret-badge">隱藏版</span>'
             
             st.markdown(f"""
             <div class="timeline-item">
@@ -359,7 +377,11 @@ if generate_btn:
             
             # 第二個景點
             s2 = spots[1]
-            badge2 = '<span class="taoyuan-badge">蘇區長大推</span>' if "復興" in s2['name'] or "拉拉山" in s2['name'] else ""
+            badge2 = ""
+            if "復興" in s2['name'] or "拉拉山" in s2['name']:
+                badge2 = '<span class="taoyuan-badge">蘇區長大推</span>'
+            elif "秘境" in s2.get('desc', '') or "爆紅" in s2.get('desc', ''):
+                badge2 = '<span class="secret-badge">隱藏版</span>'
             
             st.markdown(f"""
             <div class="timeline-item">
