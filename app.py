@@ -55,6 +55,31 @@ footer {display: none !important;}
     margin-bottom: 20px;
 }
 
+/* === 🚀 關鍵修改：出發日高亮特效 === */
+/* 1. 讓標題跳動並變色 */
+div[data-testid="stDateInput"] > label {
+    color: #C71585 !important; /* 深粉紅 */
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    text-shadow: 0px 0px 8px rgba(255, 20, 147, 0.4);
+    animation: pulse 2s infinite; /* 心跳動畫 */
+}
+
+/* 2. 讓輸入框本身有粗邊框 */
+div[data-testid="stDateInput"] div[data-baseweb="input"] {
+    border: 2px solid #FF1493 !important;
+    background-color: #FFF5F7 !important;
+    border-radius: 10px !important;
+}
+
+/* 動畫定義 */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+/* ================================= */
+
 /* 按鈕優化 */
 .stButton>button {
     width: 100%;
@@ -246,6 +271,7 @@ with c2:
 
 c3, c4 = st.columns(2)
 with c3:
+    # 這裡的 "🚀 出發日" 標籤會被 CSS 自動捕捉並加上特效
     travel_date = st.date_input("🚀 出發日", value=date(2026, 2, 20))
 with c4:
     group = st.selectbox("👥 夥伴", ["情侶", "親子", "長輩", "獨旅"])
