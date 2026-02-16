@@ -17,100 +17,99 @@ st.set_page_config(
 # 2. CSS 美學 (UI/UX Upgrade)
 # ==========================================
 st.markdown("""
-    <style>
-    /* 全站基礎設定：粉嫩櫻花風 */
-    .stApp {
-        background-color: #FFF0F5;
-        font-family: "Microsoft JhengHei", sans-serif;
-        color: #333333 !important;
-    }
-    
-    /* 隱藏官方雜項 */
-    header {visibility: hidden;}
-    footer {display: none !important;}
-    
-    /* 標題區：增強層次感 */
-    .header-box {
-        background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
-        padding: 30px 20px;
-        border-radius: 0 0 30px 30px;
-        color: white !important;
-        text-align: center;
-        margin-bottom: 25px;
-        box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
-        margin-top: -60px;
-    }
-    .header-title { 
-        font-size: 28px; font-weight: 800; letter-spacing: 1px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2); color: white !important; 
-    }
-    
-    /* 輸入區卡片化 */
-    .input-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        border: 1px solid #FFC0CB;
-        margin-bottom: 20px;
-    }
-    
-    /* 按鈕優化：更像 App 的觸感 */
-    .stButton>button {
-        width: 100%;
-        background: linear-gradient(90deg, #C71585 0%, #DB7093 100%);
-        color: white !important;
-        border-radius: 50px;
-        border: none;
-        padding: 14px 0;
-        font-weight: bold;
-        font-size: 18px;
-        box-shadow: 0 4px 12px rgba(199, 21, 133, 0.3);
-        transition: transform 0.1s;
-    }
-    .stButton>button:active { transform: scale(0.98); }
-    
-    /* 行程卡片：左側色條區分 */
-    .day-card {
-        background: white;
-        border-radius: 16px;
-        padding: 18px;
-        margin-bottom: 15px;
-        border-left: 8px solid #FF69B4;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-        position: relative;
-    }
-    
-    /* 導航按鈕 (小) */
-    .nav-btn {
-        display: inline-block;
-        background-color: #4285F4;
-        color: white !important;
-        padding: 4px 10px;
-        border-radius: 15px;
-        font-size: 12px;
-        text-decoration: none;
-        margin-left: 5px;
-    }
-    
-    /* 標籤系統 */
-    .tag { font-size: 11px; padding: 3px 8px; border-radius: 10px; margin-right: 5px; color: white; display: inline-block;}
-    .tag-must { background: #FF1493; } /* 蘇區長推 */
-    .tag-hot { background: #FF8C00; }  /* 熱門 */
-    .tag-secret { background: #9370DB; } /* 秘境 */
-    
-    /* 花況燈號 */
-    .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
-    .status-full { background-color: #FF1493; box-shadow: 0 0 5px #FF1493; } /* 滿開 */
-    .status-start { background-color: #32CD32; } /* 剛開 */
-    
-    </style>
+<style>
+/* 全站基礎設定：粉嫩櫻花風 */
+.stApp {
+    background-color: #FFF0F5;
+    font-family: "Microsoft JhengHei", sans-serif;
+    color: #333333 !important;
+}
+
+/* 隱藏官方雜項 */
+header {visibility: hidden;}
+footer {display: none !important;}
+
+/* 標題區：增強層次感 */
+.header-box {
+    background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
+    padding: 30px 20px;
+    border-radius: 0 0 30px 30px;
+    color: white !important;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+    margin-top: -60px;
+}
+.header-title { 
+    font-size: 28px; font-weight: 800; letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2); color: white !important; 
+}
+
+/* 輸入區卡片化 */
+.input-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #FFC0CB;
+    margin-bottom: 20px;
+}
+
+/* 按鈕優化：更像 App 的觸感 */
+.stButton>button {
+    width: 100%;
+    background: linear-gradient(90deg, #C71585 0%, #DB7093 100%);
+    color: white !important;
+    border-radius: 50px;
+    border: none;
+    padding: 14px 0;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(199, 21, 133, 0.3);
+    transition: transform 0.1s;
+}
+.stButton>button:active { transform: scale(0.98); }
+
+/* 行程卡片：左側色條區分 */
+.day-card {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 15px;
+    border-left: 8px solid #FF69B4;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+/* 導航按鈕 (小) */
+.nav-btn {
+    display: inline-block;
+    background-color: #4285F4;
+    color: white !important;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+/* 標籤系統 */
+.tag { font-size: 11px; padding: 3px 8px; border-radius: 10px; margin-right: 5px; color: white; display: inline-block;}
+.tag-must { background: #FF1493; } /* 蘇區長推 */
+.tag-hot { background: #FF8C00; }  /* 熱門 */
+.tag-secret { background: #9370DB; } /* 秘境 */
+
+/* 花況燈號 */
+.status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+.status-full { background-color: #FF1493; box-shadow: 0 0 5px #FF1493; } /* 滿開 */
+.status-start { background-color: #32CD32; } /* 剛開 */
+
+</style>
 """, unsafe_allow_html=True)
 
 # ==========================================
 # 3. 核心資料庫 (Geo-Database Upgrade)
 # ==========================================
-# 新增 lat, lon (經緯度) 與 county (縣市分組，防止亂跑)
 all_spots_db = [
     # === 👑 桃園復興區 (核心推廣) ===
     {"name": "拉拉山恩愛農場", "region": "北部", "county": "桃園", "lat": 24.695, "lon": 121.405, "zone": "深山", "month": [2, 3], "flower": "千島櫻", "status": "🌸 滿開", "desc": "粉紅櫻花與雲海同框的夢幻大景。"},
@@ -210,12 +209,12 @@ def generate_smart_itinerary(travel_date, days_option, group, target_region):
 # 5. UI 呈現 (Mobile First + Map)
 # ==========================================
 st.markdown("""
-    <div class="header-box">
-        <div class="header-title">🌸 2026 全國賞櫻地圖</div>
-        <div style="color:white; opacity:0.9; margin-top:5px; font-size:14px;">
-            復興區長 <b>蘇佐璽</b> 祝大家新春愉快．賞花開心 ❤️
-        </div>
-    </div>
+<div class="header-box">
+<div class="header-title">🌸 2026 全國賞櫻地圖</div>
+<div style="color:white; opacity:0.9; margin-top:5px; font-size:14px;">
+復興區長 <b>蘇佐璽</b> 祝大家新春愉快．賞花開心 ❤️
+</div>
+</div>
 """, unsafe_allow_html=True)
 
 # --- 1. 輸入區 ---
@@ -282,41 +281,37 @@ if run_btn:
             def get_nav_link(name):
                 return f"https://www.google.com/maps/search/?api=1&query={name}"
 
+            # === 關鍵修復：HTML 字串完全靠左，移除所有縮排 ===
             st.markdown(f"""
-            <div class="day-card">
-                <div style="font-size:20px; font-weight:bold; color:#333; margin-bottom:15px; border-bottom:1px dashed #FFB6C1; padding-bottom:10px;">
-                    🗓️ Day {d} <span style="font-size:14px; color:#888; font-weight:normal;">({s1['county']}周邊)</span>
-                </div>
-                
-                <!-- Spot 1 -->
-                <div style="margin-bottom:20px;">
-                    <div style="font-weight:bold; font-size:18px; color:#C71585;">
-                        09:30 {s1['name']} 
-                        <a href="{get_nav_link(s1['name'])}" target="_blank" class="nav-btn">➤ 導航</a>
-                    </div>
-                    <div style="margin-top:5px;">{get_tags(s1)}</div>
-                    <div style="color:#555; font-size:14px; margin-top:5px;">
-                        <span class="status-dot status-full"></span>{s1['status']} | {s1['desc']}
-                    </div>
-                </div>
-                
-                <div style="background:#FFF0F5; padding:10px; border-radius:8px; font-size:14px; color:#C71585; margin-bottom:20px; text-align:center;">
-                    🍱 午餐推薦：{s1['county']} 在地風味料理
-                </div>
-
-                <!-- Spot 2 -->
-                <div>
-                    <div style="font-weight:bold; font-size:18px; color:#C71585;">
-                        14:30 {s2['name']}
-                        <a href="{get_nav_link(s2['name'])}" target="_blank" class="nav-btn">➤ 導航</a>
-                    </div>
-                    <div style="margin-top:5px;">{get_tags(s2)}</div>
-                    <div style="color:#555; font-size:14px; margin-top:5px;">
-                        <span class="status-dot status-start"></span>{s2['status']} | {s2['desc']}
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+<div class="day-card">
+<div style="font-size:20px; font-weight:bold; color:#333; margin-bottom:15px; border-bottom:1px dashed #FFB6C1; padding-bottom:10px;">
+🗓️ Day {d} <span style="font-size:14px; color:#888; font-weight:normal;">({s1['county']}周邊)</span>
+</div>
+<div style="margin-bottom:20px;">
+<div style="font-weight:bold; font-size:18px; color:#C71585;">
+09:30 {s1['name']} 
+<a href="{get_nav_link(s1['name'])}" target="_blank" class="nav-btn">➤ 導航</a>
+</div>
+<div style="margin-top:5px;">{get_tags(s1)}</div>
+<div style="color:#555; font-size:14px; margin-top:5px;">
+<span class="status-dot status-full"></span>{s1['status']} | {s1['desc']}
+</div>
+</div>
+<div style="background:#FFF0F5; padding:10px; border-radius:8px; font-size:14px; color:#C71585; margin-bottom:20px; text-align:center;">
+🍱 午餐推薦：{s1['county']} 在地風味料理
+</div>
+<div>
+<div style="font-weight:bold; font-size:18px; color:#C71585;">
+14:30 {s2['name']}
+<a href="{get_nav_link(s2['name'])}" target="_blank" class="nav-btn">➤ 導航</a>
+</div>
+<div style="margin-top:5px;">{get_tags(s2)}</div>
+<div style="color:#555; font-size:14px; margin-top:5px;">
+<span class="status-dot status-start"></span>{s2['status']} | {s2['desc']}
+</div>
+</div>
+</div>
+""", unsafe_allow_html=True)
 
 else:
     # 尚未點擊按鈕時的歡迎畫面
@@ -329,9 +324,9 @@ else:
     for i, s in enumerate(hot_spots):
         with cols[i % 2]:
             st.markdown(f"""
-            <div style="background:white; padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid #eee;">
-                <b>{s['name']}</b><br>
-                <span style="font-size:12px; color:#FF1493;">{s['status']}</span>
-                <span style="font-size:12px; color:#666;">{s['county']}</span>
-            </div>
-            """, unsafe_allow_html=True)
+<div style="background:white; padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid #eee;">
+<b>{s['name']}</b><br>
+<span style="font-size:12px; color:#FF1493;">{s['status']}</span>
+<span style="font-size:12px; color:#666;">{s['county']}</span>
+</div>
+""", unsafe_allow_html=True)
